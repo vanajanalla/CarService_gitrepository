@@ -1,0 +1,38 @@
+-----Admin page[DataBase]------
+
+create database name[carzDB]
+database changed ie;carzDB
+
+create table Admin[table-name](EmployeeId varchar(6),EmployeeName varchar(8),Designation varchar(15));
+
+ table has created
+ Query ok,3 rows affected;
+ select  * from Admin;
+ [then its display the table about the Admin]
+ 
+ for to update the query
+ update admin[table_name] set AdminName="vanaja" where adminId="admin1";
+ 
+ 
+ 
+ ---------AddEmployee[DataBase]-----
+ 
+ --------------AdminCarDetails[DateBase]---------------
+ 
+ create database name[carzDB]
+ database changed ie;carzDB
+ 
+ mysql> create table CarDetails1(Car_RegdNo long,Car_KMs long,Car_Make long,Car_Model long,Car_MftYear long,Car_DateofReg long,Car_EngineNo long,Car_ChassisNo long,Car_TypeofFuel varchar(55),Car_Color varchar(55),OwnerID varchar(55),primary key(OwnerID));
+
+
+mysql> create table CarPolicy1(Policy_InsuranceCompName varchar(55),Policy_Number long,Policy_CoverNoteNo long,Policy_CarColor varchar(55),Policy_PeriodofIns_Form long,Policy_PeriodofIns_To long,Policy_PeriodofPollution_Form long,Policy_Periodofpollution_To long);
+Query OK, 0 rows affected (0.09 sec)
+
+
+mysql> create table CarOwner1(OwnerID varchar(55),Owner_Name varchar(55),Owner_Occupation varchar(55),Owner_Address varchar(55),Owner_Location varchar(55),Owner_City varchar(55),Owner_State varchar(55),Owner_Pincode long,Owner_Landnumber long,Owner_Mobilenumber long,Owner_Emailid varchar(55),primary key(OwnerID));
+Query OK, 0 rows affected (0.14 sec)
+
+
+ 
+ 
+ 

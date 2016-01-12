@@ -1,0 +1,322 @@
+package dao;
+
+import java.sql.*;
+import java.util.ArrayList;
+
+import bean.CarDetailsBean;
+import bean.CarOwnerBean;
+import bean.CarPolicyBean;
+import bean.EmployeeBean;
+import bean.AdminBean;
+
+
+public class DBConnection {
+	PreparedStatement ps = null;
+	ResultSet rs = null;
+	Connection con = null;
+
+	public DBConnection() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			con = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/carzDB", "root", "root");
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+	}
+
+	public boolean loginValidate(AdminBean adminbean) {
+
+		boolean status = false;
+		try {
+			ps = con.prepareStatement("select * from Admin_Table where adminId=? and adminPassword=?");
+			ps.setString(1, adminbean.getAdminId());
+
+			ps.setString(2, adminbean.getAdminPassword());
+
+			rs = ps.executeQuery();
+
+			status = rs.next();
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+
+	public int insertDetails(EmployeeBean employeebean) {
+		int result=0;
+		try {
+			String query = "insert into Employee_Table values(?,?,?,?,?,?,?,?)";
+			ps = con.prepareStatement(query);
+			ps.setString(1, employeebean.getEmployeeId());
+			ps.setString(2, employeebean.getEmployeeName());
+			ps.setString(3, employeebean.getDesignation());
+			ps.setLong(4, employeebean.getMobileNo());
+			ps.setString(5, employeebean.getEmailId());
+			ps.setString(6, employeebean.getAddress());
+			ps.setString(7, employeebean.getJoiningDate());
+			ps.setString(8, employeebean.getPreviousExperience());
+			result=ps.executeUpdate();
+		}
+
+		catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException se) {
+				System.out.println(se);
+			}
+		}
+		return result;
+	}
+
+	public ArrayList<EmployeeBean> getDetails(String designation) {
+		ArrayList<EmployeeBean> arrayemployee = null;
+		try {
+			EmployeeBean employeebean = new EmployeeBean();
+			employeebean.setDesignation(designation);
+			arrayemployee = new ArrayList<EmployeeBean>();
+			ps = con.prepareStatement("select * from Employee_Table where Designation=?");
+			ps.setString(1, employeebean.getDesignation());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				employeebean.setEmployeeId(rs.getString(1));
+				employeebean.setEmployeeName(rs.getString(2));
+				employeebean.setMobileNo(rs.getLong(4));
+				employeebean.setEmailId(rs.getString(5));
+				employeebean.setAddress(rs.getString(6));
+				employeebean.setJoiningDate(rs.getString(7));
+				employeebean.setPreviousExperience(rs.getString(8));
+
+				arrayemployee.add(employeebean);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return arrayemployee;
+	}
+
+	public String getUserName(AdminBean bean) {
+		String AdminName = null;
+		try {
+
+			String query = "select AdminName from Admin_Table where AdminId=?";
+			ps = con.prepareStatement(query);
+			ps.setString(1, bean.getAdminId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+
+				AdminName = rs.getString(1);
+				
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return AdminName;
+
+	}
+
+	public String loginValidate(EmployeeBean employeebean) {
+		String Designation="";
+		try {
+			String query="select Designation from Employee_Table where EmployeeId=? and MoblieNo=?";
+			ps = con.prepareStatement(query);
+			ps.setString(1, employeebean.getEmployeeId());
+
+			ps.setLong(2, employeebean.getMobileNo());
+			
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Designation= rs.getString(1);
+			}
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+return Designation;
+	}
+
+	public String getUserName(EmployeeBean employeebean) {
+		String EmployeeName = null;
+		try {
+
+			String query = "select EmployeeName from Employee_Table where EmployeeId=?";
+			ps = con.prepareStatement(query);
+			ps.setString(1, employeebean.getEmployeeId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				EmployeeName = rs.getString(1);
+
+				
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return EmployeeName;
+
+	}
+
+	public void insertDetails(CarOwnerBean carownerbean,CarDetailsBean cardetailsbean,CarPolicyBean carpolicybean) {
+		
+		try {
+			String query1 = "insert into caronwer values(?,?,?,?,?,?,?,?,?,?,?)";
+			ps = con.prepareStatement(query1);
+			ps.setString(1, carownerbean.getOwnerID());
+			ps.setString(2, carownerbean.getNameOfTheOwner());
+			ps.setString(3, carownerbean.getOccupation());
+			ps.setString(4, carownerbean.getAddress());
+			ps.setString(5, carownerbean.getLocation());
+			ps.setString(6, carownerbean.getCity());
+			ps.setString(7, carownerbean.getState());
+			ps.setLong(8, carownerbean.getPincode());
+			ps.setLong(9, carownerbean.getLandNumber());
+			ps.setLong(10, carownerbean.getMobileNumber());
+			ps.setString(11, carownerbean.getEmailId());
+			String query2 = "insert into cardetails values(?,?,?,?,?,?,?,?,?,?)";
+			ps=con.prepareStatement(query2);
+			ps.setString(1, cardetailsbean.getCarRegdNumber());
+			ps.setLong(2, cardetailsbean.getCarKms());
+			ps.setLong(3, cardetailsbean.getCarMake());
+			ps.setLong(4, cardetailsbean.getCarModel());
+			ps.setLong(5, cardetailsbean.getMftYearOfRegd());
+			ps.setString(6, cardetailsbean.getDateOfRegistration());
+			ps.setLong(7, cardetailsbean.getEngineNumber());
+			ps.setLong(8, cardetailsbean.getChassisNumber());
+			ps.setString(9, cardetailsbean.getTypeOfFuel());
+			ps.setString(10, cardetailsbean.getCarColor());
+			String query3 = "insert into carpolicy values(?,?,?,?,?,?,?,?)";
+			ps=con.prepareStatement(query3);
+			ps.setString(1, carpolicybean.getInsuranceCompanyName());
+			ps.setLong(2, carpolicybean.getPolicyNumber());
+			ps.setString(3, carpolicybean.getCarColor1());
+			ps.setLong(4, carpolicybean.getCoverNoteNumber());
+			ps.setString(5, carpolicybean.getPeriodOfInsuranceFrom());
+			ps.setString(6, carpolicybean.getPeriodOfInsuranceTo());
+			ps.setString(7, carpolicybean.getPeriodOfPollutionFrom());
+			ps.setString(8, carpolicybean.getPeriodOfPollutionTo());
+			ps.executeUpdate();
+		}
+
+		catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException se) {
+				System.out.println(se);
+			}
+		}
+		
+	}
+	
+	public boolean carValidate(CarDetailsBean cardetailsbean) 
+	{
+
+		boolean status = false;
+		try {
+			ps = con.prepareStatement("select * from cardetails1 where Car_RegdNo=?");
+			ps.setString(1, cardetailsbean.getCarRegdNumber());
+
+			
+			rs = ps.executeQuery();
+
+			status = rs.next();
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+	
+public ArrayList<EmployeeBean> allDetails(EmployeeBean bean)
+	
+	{
+		ArrayList<EmployeeBean> obj=new ArrayList<EmployeeBean>();
+		EmployeeBean empbean=new EmployeeBean();
+		try
+		{
+		
+		
+	String employeeid="select * from AddEmployee where EmployeeId=?";
+	ps=con.prepareStatement(employeeid);
+	
+	ps.setString(1, bean.getEmployeeId());
+	
+	rs=ps.executeQuery();
+	while(rs.next())
+	{
+		empbean.setEmployeeName(rs.getString(2));
+		empbean.setDesignation(rs.getString(3));
+		empbean.setMobileNo(rs.getLong(4));
+		empbean.setEmailId(rs.getString(5));
+		empbean.setAddress(rs.getString(6));
+		empbean.setJoiningDate(rs.getString(7));
+		empbean.setPreviousExperience(rs.getString(8));
+		
+		obj.add(empbean);
+	}
+	
+		}
+		catch(SQLException se)
+		{
+			System.out.println(se);
+		}
+		
+			
+		 return obj;
+			
+		}
+public  ArrayList<EmployeeBean> allDetails()
+{
+	ArrayList<EmployeeBean> arrayobj = null;
+	try {
+		EmployeeBean bean;
+//		bean = new EmployeeBean();
+//		bean.setEmployeeId(employeeid);
+
+		arrayobj = new ArrayList<EmployeeBean>();
+		ps = con.prepareStatement("select EmployeeId from AddEmployee");
+//		ps.setString(1, bean.getEmployeeId());
+		rs = ps.executeQuery();
+		
+		while (rs.next())
+			
+		{
+			bean = new EmployeeBean();
+			bean.setEmployeeId(rs.getString(1));
+//			bean.setEmployeeName(rs.getString(2));
+//			bean.setDesignation(rs.getString(3));
+
+
+            arrayobj.add(bean);
+
+		}
+
+	} catch (Exception e) {
+		System.out.println(e);
+	} finally {
+		try {
+			// re.close();
+			ps.close();
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	return arrayobj;
+}
+	
+}
