@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee</title>
+<script type="text/javascript">
+function ValidateForm(myform){
+ErrorText= "";
+if ( ( myform.employee[0].checked == false ) && ( myform.employee[1].checked == false ) ) 
+{
+alert ( "Please select any one:" ); 
+return false;
+}
+else if( myform.employee[0].checked == true)
+	{
+	location.href="AddEmployee.jsp";
+	}
+	
+	}
+</script>
+</head>
+<body>
+<form name="myform" method="post" target="frame_employee" >
+<input type="radio" name="employee" value="New Employee" >New Employee
+<input type="radio" name="employee" value="Update Exisiting Employee" >Update Existing Employee<br>
+<input   type="button" name="ok" value="OK" onclick=" ValidateForm(myform)">
+</form>
+</body>
+</html>
